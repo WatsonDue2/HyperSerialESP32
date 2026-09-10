@@ -2,7 +2,7 @@
 *
 *  MIT License
 *
-*  Copyright (c) 2023 awawa-dev
+*  Copyright (c) 2021-2026 awawa-dev
 *
 *  https://github.com/awawa-dev/HyperSerialESP32
 *
@@ -74,7 +74,7 @@
 #endif
 
 #ifdef SPILED_APA102
-	#define LED_DRIVER NeoPixelBus<DotStarBgrFeature, DotStarEsp32DmaHspiMethod>
+	#define LED_DRIVER NeoPixelBus<DotStarLbgrFeature, DotStarEsp32DmaHspiMethod>
 #elif SPILED_WS2801
 	#define LED_DRIVER NeoPixelBus<NeoRbgFeature, NeoWs2801Spi2MhzMethod>
 #endif
@@ -111,7 +111,7 @@
 				#define LED_DRIVER2 NeoPixelBus<NeoGrbFeature, NeoEsp32I2s0Ws2812xMethod>
 			#endif
 		#elif SPILED_APA102
-			#define LED_DRIVER2 NeoPixelBus<DotStarBgrFeature, DotStarEsp32DmaHspiMethod>
+			#define LED_DRIVER2 NeoPixelBus<DotStarLbgrFeature, DotStarEsp32DmaHspiMethod>
 		#elif SPILED_WS2801
 			#define LED_DRIVER2 NeoPixelBus<NeoRbgFeature, NeoWs2801Spi2MhzMethod>
 		#endif
@@ -133,13 +133,16 @@
 				#define LED_DRIVER2 NeoPixelBus<NeoGrbFeature, NeoEsp32I2s0Ws2812xMethod>
 			#endif
 		#elif SPILED_APA102
-			#define LED_DRIVER2 NeoPixelBus<DotStarBgrFeature, DotStarEsp32DmaVspiMethod>
+			#define LED_DRIVER2 NeoPixelBus<DotStarLbgrFeature, DotStarEsp32DmaVspiMethod>
 		#elif SPILED_WS2801
 			#define LED_DRIVER2 NeoPixelBus<NeoRbgFeature, NeoWs2801Spi2MhzMethod>
 		#endif
 	#endif
 	#pragma message(VAR_NAME_VALUE2(LED_DRIVER))
 	#pragma message(VAR_NAME_VALUE(SECOND_SEGMENT_START_INDEX))
+	#ifdef SECOND_SEGMENT_REVERSED
+		#pragma message(VAR_NAME_VALUE(SECOND_SEGMENT_REVERSED))
+	#endif	
 	#pragma message(VAR_NAME_VALUE(SECOND_SEGMENT_DATA_PIN))
 	#ifdef SECOND_SEGMENT_CLOCK_PIN
 		#pragma message(VAR_NAME_VALUE(SECOND_SEGMENT_CLOCK_PIN))
@@ -157,10 +160,15 @@
 
 #define SerialPort Serial
 
-#if defined(LED_POWER_PIN)
+#ifdef LED_POWER_PIN
 	#pragma message(VAR_NAME_VALUE(LED_POWER_PIN))
+	#ifdef LED_POWER_INVERT
+		#pragma message(VAR_NAME_VALUE(LED_POWER_INVERT))
+	#endif
 	#include "powercontrol.h"
 #endif
+
+
 
 #include "main.h"
 
@@ -243,7 +251,7 @@ void setup()
 		Serial.write("LED_POWER_PIN = ");
 		Serial.println(LED_POWER_PIN);
 		powerControl.init();
-	#endif	
+	#endif
 
 	if (multicore)
 	{
